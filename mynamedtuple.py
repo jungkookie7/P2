@@ -96,9 +96,56 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     large_string += new
     large_string += new
 
+    # Accessor methods
+    for name in field_names:
+        large_string += f"    def get_{name}(self):\n"
+        large_string += f"        return self.{name}\n\n"
+
+        # __getitem__ method
+    large_string += "    def __getitem__(self, index):\n"
+    large_string += f"        return getattr(self, self._fields[index])\n\n"
+
+        # __eq__ method
+    large_string += "    def __eq__(self, other):\n"
+    large_string += "        if not isinstance(other, self.__class__):\n"
+    large_string += "            return NotImplemented\n"
+    large_string += "        return all(getattr(self, name) == getattr(other, name) for name in self._fields)\n\n"
+
+        # asdict method
+    large_string += "    def asdict(self):\n"
+    large_string += "        return {name: getattr(self, name) for name in self._fields}\n\n"
+
+        # make method
+    large_string += "    @classmethod\n"
+    large_string += "    def make(cls, iterable):\n"
+    large_string += "        return cls(*iterable)\n\n"
+
+        # replace method
+    large_string += "    def replace(self, **kwargs):\n"
+    large_string += "        if self._mutable:\n"
+    large_string += "            for name, value in kwargs.items():\n"
+    large_string += "                setattr(self, name, value)\n"
+    large_string += "            return None\n"
+    large_string += "        else:\n"
+    large_string += "            new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n"
+    large_string += "            return self.__class__(**new_values)\n\n"
+
+        # __setattr__ method
+    large_string += "    def __setattr__(self, name, value):\n"
+    large_string += "        if not self._mutable and name in self._fields and hasattr(self, name):\n"
+    large_string += "            raise AttributeError(f'Cannot modify {name} in immutable {self.__class__.__name__}')\n"
+    large_string += "        super().__setattr__(name, value)\n"
+
+        # Execute the generated class code
+    namespace = {}
+    exec(large_string, namespace)
+    return namespace[type_name]
+
+
+
 #TESTS
-coordinate = mynamedtuple('coordinate', ['x','y'], mutable=False) 
-coordinate = mynamedtuple('coordinate', 'x y')
-p = coordinate(0, 0)
-print(p) # coordinate(x=0,y=0)
-print(p.asdict()) #{’x’: 0, ’y’: 0}
+#coordinate = mynamedtuple('coordinate', ['x','y'], mutable=False) 
+#coordinate = mynamedtuple('coordinate', 'x y')
+#p = coordinate(0, 0)
+#print(p) # coordinate(x=0,y=0)
+#print(p.asdict()) #{’x’: 0, ’y’: 0}
