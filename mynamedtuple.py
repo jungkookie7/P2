@@ -59,23 +59,28 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += new
 
     # __init__
-    init_params = ''
-    for name in field_names:
-        init_params += f"{name}={defaults.get(name, 'None')}, "
-    init_params = init_params.rstrip(', ')  
-    big_string += f"{tab}def __init__(self, {init_params}):{new}"
+    params = ''
+    for i in field_names:
+        params += (f'{i}={defaults.get(i, 'None')}, ')
+    params = params.rstrip(params[-2:])  
+    print(params)
+    big_string += (f'{tab}def __init__(self, {params}):{new}')
     
-    for name in field_names:
-        big_string += f"{tab*2}self.{name} = {name}{new}"
+    for i in field_names:
+        big_string += (f'{tab}{tab}self.{i} = {i}')
+        big_string += new
     big_string += new
 
     # __repr__ method
-    big_string += f"{tab}def __repr__(self):{new}"
+    big_string += (f'{tab}def __repr__(self):')
+    big_string += new
     repr_fields = ''
     for name in field_names:
         repr_fields += f"{name}={{self.{name}!r}},"
     repr_fields = repr_fields.rstrip(', ')  
-    big_string += f"{tab*2}return f'{type_name}({repr_fields})'{new}{new}"
+    big_string += f"{tab}{tab}return f'{type_name}({repr_fields})'"
+    big_string += new
+    big_string += new
 
     # Accessor methods
     for name in field_names:
@@ -120,6 +125,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += "        else:\n"
     big_string += "            new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n"
     big_string += "            return self.__class__(**new_values)\n\n"
+    print(big_string)
 
     # _replace method
     big_string += "    def _replace(self, **kwargs):\n"
@@ -142,21 +148,3 @@ coordinate = mynamedtuple('coordinate', ['x', 'y'], mutable=False)  # testing tu
 p = coordinate(0, 0)
 print(p)  # coordinate(x=0, y=0)
 print(p.asdict())  # {'x': 0, 'y': 0}
-
-# Test for _make method
-point_data = (1, 2)
-p2 = coordinate._make(point_data)
-print(p2)  # coordinate(x=1, y=2)
-
-# Test for mutable replace method
-mutable_coordinate = mynamedtuple('mutable_coordinate', ['a', 'b'], mutable=True)
-mutable_point = mutable_coordinate(1, 2)
-mutable_point.replace(b=5)  # Call replace on a mutable instance
-print(mutable_point)  # mutable_coordinate(a=1, b=5)
-print(mutable_point.replace(a=3))  # Should print None
-
-# Testing _replace for immutable instance
-immutable_point = coordinate(5, 10)
-p3 = immutable_point._replace(x=15)
-print(p3)  # coordinate(x=15, y=10)
-
