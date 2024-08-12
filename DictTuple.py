@@ -5,7 +5,7 @@ class DictTuple:
         self.dt = []
 
         if len(args) == 0:
-            raise AssertionError
+            raise AssertionError('cannot be empty')
         for i in args:
             if type(i) != dict:
                 raise AssertionError('not a dict')
