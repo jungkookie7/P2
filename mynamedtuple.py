@@ -95,7 +95,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     # __eq__
     big_string += (f'{tab}def __eq__(self, other):{new}')
     big_string += (f'{tab*2}if type(other) != self.__class__:{new}')
-    big_string += (f'{tab*3}return SyntaxError{new}')
+    big_string += (f'{tab*3}return False{new}')
     big_string += (f'{tab*2}for name in self._fields:{new}')
     big_string += (f'{tab*3}if getattr(self, name) != getattr(other, name):{new}')
     big_string += (f'{tab*4}return False{new}')
