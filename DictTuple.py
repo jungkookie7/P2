@@ -39,64 +39,95 @@ class DictTuple:
         return (f'DictTuple({joined_dicts})')
 
     def __contains__(self, key):
-        return any(key in d for d in self.dt)
+        for i in self.dt:
+            if key in i:
+                return True
+        return False
 
     def __getitem__(self, key):
-        for d in reversed(self.dt):
-            if key in d:
-                return d[key]
-        raise KeyError(f"{key} not found in any dictionary.")
+        reversed_dicts = reversed(self.dt)
+        for i in reversed_dicts:
+            if key in i:
+                return i[key]
+        raise KeyError
 
     def __setitem__(self, key, value):
-        for d in reversed(self.dt):
-            if key in d:
-                d[key] = value
+        reversed_dicts = reversed(self.dt)
+        for i in reversed_dicts:
+            if key in i:
+                i[key] = value
                 return
         self.dt.append({key: value})
 
     def __delitem__(self, key):
-        found = False
-        for d in self.dt:
+        deleted = False
+        for d in self.dt:   
             if key in d:
                 del d[key]
-                found = True
-        if not found:
-            raise KeyError(f"{key} not found in any dictionary.")
+                deleted = True
+        if deleted == False:
+            raise KeyError
 
     def __call__(self, key):
-        return [d[key] for d in self.dt if key in d]
+        another_freaking_list = []
+        for i in self.dt:
+            if key in i:
+                another_freaking_list.append(i[key])
+        return another_freaking_list
 
     def __iter__(self):
-        seen = set()
-        for d in reversed(self.dt):
-            for key in sorted(d.keys()):
-                if key not in seen:
-                    seen.add(key)
-                    yield key
+        lst = []
+        reversed_dicts = reversed(self.dt)
+        for i in reversed_dicts:
+            sorted_values = sorted(i)
+            for a in sorted_values:
+                if a not in lst:
+                    lst.append(a)
+        return iter(lst)
 
     def __eq__(self, other):
-        if isinstance(other, DictTuple):
-            return all(self[key] == other[key] for key in self) and len(self) == len(other)
-        elif isinstance(other, dict):
-            return all(self[key] == other.get(key) for key in self) and len(self) == len(other)
+        len_self = len(self)
+        len_other = len(other)  
+        if type(other) == DictTuple:
+            if len_self == len_other:
+                for key in self:
+                    if self[key] == other[key]:
+                        pass
+                    elif self[key] != other[key]:
+                        return False
+            elif len_self != len_other:
+                    return False
+            return True
+        elif type(other) == dict:
+            if len_self == len_other:
+                for key in self:
+                    if self[key] == other.get(key):
+                        pass
+                    elif self[key] != other.get(key):
+                        return False
+            elif len_self != len_other:
+                return False
+            return True
         return False
-
+    
     def __add__(self, other):
-        if isinstance(other, DictTuple):
-            # Filter out empty dictionaries
-            combined = [d for d in (*self.dt, *other.dt) if d]
-            return DictTuple(*combined)
-        elif isinstance(other, dict):
-            if other:
+        if type(other) == DictTuple:
+            new_new_list = []
+            for i in (*self.dt, *other.dt):
+                if len(i) != 0:
+                    new_new_list.append(i)  
+            return DictTuple(*new_new_list)
+
+        if type(other) == dict:
+            if len(other) != 0:  
                 return DictTuple(*self.dt, other)
             else:
-                raise AssertionError("Cannot add an empty dictionary to a DictTuple.")
+                raise AssertionError       
         else:
-            raise TypeError(f"Unsupported operand type(s) for +: 'DictTuple' and '{type(other).__name__}'")
-
+            raise TypeError
 
     def __setattr__(self, name, value):
         if name == "dt":
-            super().__setattr__(name, value)
+            self.__dict__[name] = value
         else:
-            raise AssertionError(f"Cannot set attribute {name}; only 'dt' is allowed.")
+            raise AssertionError
