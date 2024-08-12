@@ -129,7 +129,7 @@ class DictTuple:
         if name == "dt":
             self.__dict__[name] = value
         else:
-            raise AssertionError
+            raise AssertionError('cannot add new attributes to object')
 
 #TESTERS
 coordinate = mynamedtuple('coordinate', 'x y')
