@@ -113,6 +113,12 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
     # make 
     big_string += (f'{tab}@classmethod{new}')
+    big_string += (f'{tab}def make(cls, iterable):{new}')
+    big_string += (f'{tab*2}return cls(*iterable){new*2}')
+    #print(big_string) *TEST MIDWAY
+
+    # _make 
+    big_string += (f'{tab}@classmethod{new}')
     big_string += (f'{tab}def _make(cls, iterable):{new}')
     big_string += (f'{tab*2}return cls(*iterable){new*2}')
     #print(big_string) *TEST MIDWAY
@@ -123,33 +129,31 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += (f'{tab*3}for name, value in kwargs.items():{new}')
     big_string += (f'{tab*4}if name in self._fields:{new}')
     big_string += (f'{tab*5}object.__setattr__(self, name, value){new}')
-    big_string += (f'{tab*4}else:{new}')
-    big_string += (f'{tab*5}raise AttributeError')
-    big_string += (f'{tab*3}return None{new}')
-    big_string += (f'{tab*2}else:{new}')
-    big_string += (f'{tab*3}return self.__class__(**kwargs){new*2}')
+    big_string += (f'{tab*3}return {None}{new}')
     #print(big_string) 
     #WHY IS IT NOT WORKING
 
     # _replace 
     big_string += (f'{tab}def _replace(self, **kwargs):{new}')
-    big_string += (f'{tab*2}new_values = {{name: kwargs.get(name, getattr(self, name)) for name in self._fields}}{new}')
+    big_string += '        new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n'
     big_string += (f'{tab*2}return self.__class__(**new_values){new*2}')
     #print(big_string) *TEST MIDWAY
 
     # __setattr__ 
     big_string += (f'{tab}def __setattr__(self, name, value):{new}')
-    big_string += (f'{tab*2}if self._mutable:{new}')
-    big_string += (f'{tab*3}object.__setattr__(self, name, value){new}')
-    big_string += (f'{tab*2}elif name not in self._fields:{new}')
-    big_string += (f'{tab*3}raise AttributeError(f"Invalid field name: {name}"){new}')
-    big_string += (f'{tab*2}elif not hasattr(self, name):{new}')
+    big_string += (f'{tab*2}if self._mutable or name not in self._fields or not hasattr(self, name):{new}')
     big_string += (f'{tab*3}object.__setattr__(self, name, value){new}')
     big_string += (f'{tab*2}else:{new}')
-    big_string += (f'{tab*3}raise AttributeError(f"Cannot modify immutable field: {name}"){new*2}')
+    big_string += (f'{tab*3}raise AttributeError{new}')
     #print(big_string) *TEST MIDWAY
 
     # exec
     namespace = {}
     exec(big_string, namespace)
     return namespace[type_name]
+
+#TESTERS
+coordinate = mynamedtuple(’coordinate’, ’x y’)
+p = coordinate(0, 0)
+print(p) # coordinate(x=0,y=0)
+print(p._asdict()) #{’x’: 0, ’y’: 0}
