@@ -115,8 +115,8 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
     # _make 
     big_string += (f'{tab}@classmethod{new}')
-    big_string += (f'{tab}def _make(cls, iterable):{new}')
-    big_string += (f'{tab*2}return cls(*iterable){new*2}')
+    big_string += (f'{tab}def _make(banana, iterable):{new}')
+    big_string += (f'{tab*2}return banana(*iterable){new*2}')
     #print(big_string) *TEST MIDWAY
 
     # replace 
