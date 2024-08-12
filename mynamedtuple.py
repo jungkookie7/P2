@@ -62,7 +62,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     # __init__
     parameters = ''
     for i in field_names:
-        parameters += (f'{i}={defaults.get(i, 'None')}, ')
+        parameters += (f"{i}={defaults.get(i, 'None')}, ")
     parameters = parameters.rstrip(', ')  
     big_string += (f'{tab}def __init__(self, {parameters}):{new}')
     
