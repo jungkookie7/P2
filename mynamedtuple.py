@@ -127,8 +127,14 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
     # _replace 
     big_string += (f'{tab}def _replace(self, **kwargs):{new}')
-    big_string += '        new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n'
+    big_string += (f'{tab*2}new_values = {{}}{new}')  
+    big_string += (f'{tab*2}for name in self._fields:{new}')
+    big_string += (f'{tab*3}if name in kwargs:{new}')
+    big_string += (f'{tab*4}new_values[name] = kwargs[name]{new}')
+    big_string += (f'{tab*3}else:{new}')
+    big_string += (f'{tab*4}new_values[name] = getattr(self, name){new*2}')
     big_string += (f'{tab*2}return self.__class__(**new_values){new*2}')
+
     #print(big_string) *TEST MIDWAY
 
     # __setattr__ 
