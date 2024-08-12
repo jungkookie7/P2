@@ -2,55 +2,55 @@ import keyword
 
 def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     # testing type_name
-    if type(type_name) != str:  
+    if type(type_name) != str:  # test if a string
         raise SyntaxError
-    elif not type_name[0].isalpha():  
+    elif not type_name[0].isalpha():  # test if first element is letter
         raise SyntaxError
-    elif keyword.iskeyword(type_name):  
+    elif keyword.iskeyword(type_name):  # test if conflicts with keywords
         raise SyntaxError
-    else:  
+    else:  # passes all tests
         pass
     
     # testing field_names
-    if type(field_names) == str:  
+    if type(field_names) == str:  # tests if str, if so splits
         field_names = field_names.replace(',', ' ').split()
 
-    if type(field_names) != list or len(field_names) == 0:  
+    if type(field_names) != list or len(field_names) == 0:  # tests if field_name is NOT a list or empty
         raise SyntaxError
 
     for i in field_names:
-        if not i[0].isalpha():  
+        if not i[0].isalpha():  # tests if first element is letter
             raise SyntaxError
-        elif keyword.iskeyword(i):  
+        elif keyword.iskeyword(i):  # tests if conflicts with keywords
             raise SyntaxError
-        else: 
+        else:  # passes all tests
             pass
 
-    # testing for duplicates in field_names
-    empty_list = []
+    # testing for duplicates
+    a = []
     seen = {}  
 
     for name in field_names:
         if name not in seen:
-            empty_list.append(name)
+            a.append(name)
             seen[name] = True  
-    field_names = empty_list
+    field_names = a
 
     # testing defaults
-    if type(defaults) != dict:
+    if type(defaults) != dict:  # tests if default is a dict
         raise SyntaxError
     
     for i in defaults:
-        if i not in field_names:  
+        if i not in field_names:  # tests if element is in field_name
             raise SyntaxError
-        else:  
+        else:  # passes all tests
             pass
     
     # new line and tab
     new = ('\n')
     tab = ('    ')
 
-    # big_string NEEDED TO BE RETURNED!!!
+    # class code
     big_string = (f'class {type_name}:')
     big_string += new
     big_string += (f'{tab}_fields = {field_names}')
@@ -59,27 +59,23 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += new
 
     # __init__
-    params = ''
-    for i in field_names:
-        params += (f'{i}={defaults.get(i, 'None')}, ')
-    params = params.rstrip(params[-2:])  
-    big_string += (f'{tab}def __init__(self, {params}):{new}')
+    init_params = ''
+    for name in field_names:
+        init_params += f"{name}={defaults.get(name, 'None')}, "
+    init_params = init_params.rstrip(', ')  
+    big_string += f"{tab}def __init__(self, {init_params}):{new}"
     
-    for i in field_names:
-        big_string += (f'{tab}{tab}self.{i} = {i}')
-        big_string += new
+    for name in field_names:
+        big_string += f"{tab*2}self.{name} = {name}{new}"
     big_string += new
 
     # __repr__ method
-    big_string += (f'{tab}def __repr__(self):')
-    big_string += new
+    big_string += f"{tab}def __repr__(self):{new}"
     repr_fields = ''
     for name in field_names:
         repr_fields += f"{name}={{self.{name}!r}},"
     repr_fields = repr_fields.rstrip(', ')  
-    big_string += f"{tab}{tab}return f'{type_name}({repr_fields})'"
-    big_string += new
-    big_string += new
+    big_string += f"{tab*2}return f'{type_name}({repr_fields})'{new}{new}"
 
     # Accessor methods
     for name in field_names:
@@ -96,7 +92,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += "            return NotImplemented\n"
     big_string += "        return all(getattr(self, name) == getattr(other, name) for name in self._fields)\n\n"
 
-    # asdict method 
+    # asdict method
     big_string += "    def asdict(self):\n"
     big_string += "        return {name: getattr(self, name) for name in self._fields}\n\n"
 
