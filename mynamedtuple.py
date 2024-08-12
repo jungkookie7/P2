@@ -63,7 +63,6 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     for i in field_names:
         params += (f'{i}={defaults.get(i, 'None')}, ')
     params = params.rstrip(params[-2:])  
-    print(params)
     big_string += (f'{tab}def __init__(self, {params}):{new}')
     
     for i in field_names:
@@ -125,7 +124,6 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += "        else:\n"
     big_string += "            new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n"
     big_string += "            return self.__class__(**new_values)\n\n"
-    print(big_string)
 
     # _replace method
     big_string += "    def _replace(self, **kwargs):\n"
