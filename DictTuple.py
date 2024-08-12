@@ -25,14 +25,18 @@ class DictTuple:
         return keys  
 
     def __bool__(self):
-        if len(self.dt) < 1:
+        if len(self.dt) == 1:
             return False
         else:
             return True
 
     def __repr__(self):
-        dict_repr = ', '.join(f"{repr(d)}" for d in self.dt)
-        return f"DictTuple({dict_repr})"
+        another_list = []
+        for i in self.dt:
+            string_version = repr(i)
+            another_list.append(string_version)
+        joined_dicts = ', '.join(another_list)
+        return (f'DictTuple({joined_dicts})')
 
     def __contains__(self, key):
         return any(key in d for d in self.dt)
@@ -96,4 +100,3 @@ class DictTuple:
             super().__setattr__(name, value)
         else:
             raise AssertionError(f"Cannot set attribute {name}; only 'dt' is allowed.")
-
