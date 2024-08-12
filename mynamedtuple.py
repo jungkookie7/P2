@@ -26,6 +26,16 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
         else: #passes all tests
             pass
 
+    #testing for duplicates
+    a = []
+    seen = {}  
+
+    for name in field_names:
+        if name not in seen:
+            a.append(name)
+            seen[name] = True  
+    field_names = a
+
     #testing defaults
     if type(defaults) != dict: #tests if default is a str
         raise SyntaxError
@@ -52,4 +62,5 @@ class coordinate:
     def get_y(self):
         return self.y
 
+#TESTERS
 coordinate = mynamedtuple('coordinate', ['x','y'], mutable=False) #testing tuple number 1
