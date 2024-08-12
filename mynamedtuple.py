@@ -64,7 +64,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
     # __repr__ method
     class_code += "    def __repr__(self):\n"
-    repr_str = f"{type_name}(" + ', '.join([f"{name}={{self.{name}!r}}" for name in field_names]) + ")"
+    repr_str = f"{type_name}(" + ','.join([f"{name}={{self.{name}!r}}" for name in field_names]) + ")"
     class_code += f"        print(f'Calling __repr__: {repr_str}')  # Debug print statement\n"  # Added for debugging
     class_code += f"        return f'{repr_str}'\n\n"
 
