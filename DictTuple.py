@@ -16,9 +16,8 @@ class DictTuple:
     def __len__(self):
         keys = 0  
         empty_list = []  
-
-        for dictionary in self.dt:
-            for key in dictionary.keys():
+        for i in self.dt:
+            for key in i.keys():
                 if key not in empty_list:  
                     empty_list.append(key)  
                     keys += 1  
@@ -35,8 +34,8 @@ class DictTuple:
         for i in self.dt:
             string_version = repr(i)
             another_list.append(string_version)
-        joined_dicts = ', '.join(another_list)
-        return (f'DictTuple({joined_dicts})')
+        together = ', '.join(another_list)
+        return (f'DictTuple({together})')
 
     def __contains__(self, key):
         for i in self.dt:
@@ -61,8 +60,8 @@ class DictTuple:
 
     def __delitem__(self, key):
         deleted = False
-        for d in self.dt:   
-            if key in d:
+        for i in self.dt:   
+            if key in i:
                 del d[key]
                 deleted = True
         if deleted == False:
@@ -131,3 +130,8 @@ class DictTuple:
             self.__dict__[name] = value
         else:
             raise AssertionError
+
+#TESTERS
+coordinate = mynamedtuple('coordinate', 'x y')
+d = DictTuple({'c1': coordinate(1, 2)}, {'c1': coordinate(3, 4)})
+print(d)
