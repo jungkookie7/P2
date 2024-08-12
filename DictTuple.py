@@ -62,7 +62,7 @@ class DictTuple:
         deleted = False
         for i in self.dt:   
             if key in i:
-                del d[key]
+                del i[key]
                 deleted = True
         if deleted == False:
             raise KeyError
