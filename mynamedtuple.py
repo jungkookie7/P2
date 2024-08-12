@@ -72,23 +72,24 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     #print(big_string) *TEST MIDWAY
 
     # __repr__ 
-    big_string += f"{tab}def __repr__(self):{new}"
-    repr_fields = ''
-    for name in field_names:
-        repr_fields += f"{name}={{self.{name}!r}},"
-    repr_fields = repr_fields.rstrip(', ')  
-    big_string += f"{tab*2}return f'{type_name}({repr_fields})'{new*2}"
+    big_string += (f'{tab}def __repr__(self):{new}')
+    losing_it = ''
+    for i in field_names:
+        losing_it += f"{i}={{self.{i}!r}},"
+    losing_it = losing_it.rstrip(', ')  
+    big_string += f"{tab*2}return f'{type_name}({losing_it})'{new*2}"
     #print(big_string) *TEST MIDWAY
 
     # query/accesors 
-    for name in field_names:
-        big_string += (f'{tab}def get_{name}(self):{new}')
-        big_string += (f'{tab*2}return self.{name}{new*2}')
+    for i in field_names:
+        big_string += (f'{tab}def get_{i}(self):{new}')
+        big_string += (f'{tab*2}return self.{i}{new*2}')
     #print(big_string) *TEST MIDWAY
 
     # __getitem__ 
     big_string += (f'{tab}def __getitem__(self, index):{new}')
-    big_string += (f'{tab*2}return getattr(self, self._fields[index]){new*2}')
+    big_string += (f'{tab*2}return getattr(self, self._fields[index])')
+    big_string += f'{new*2}'
     #print(big_string) *TEST MIDWAY
 
     # __eq__ 
