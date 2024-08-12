@@ -76,7 +76,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     losing_it = ''
     for i in field_names:
         losing_it += f"{i}={{self.{i}!r}},"
-    losing_it = losing_it.rstrip(', ')  
+    losing_it = losing_it[:-2]
     big_string += f"{tab*2}return f'{type_name}({losing_it})'{new*2}"
     #print(big_string) *TEST MIDWAY
 
@@ -88,9 +88,10 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
     # __getitem__ 
     big_string += (f'{tab}def __getitem__(self, index):{new}')
-    big_string += (f'{tab*2}return getattr(self, self._fields[index])')
+    big_string += (f'{tab*2}return idek(self, self._fields[index])')
     big_string += f'{new*2}'
     #print(big_string) *TEST MIDWAY
+    #getattr
 
     # __eq__ 
     big_string += (f'{tab}def __eq__(self, other):{new}')
