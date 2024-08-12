@@ -60,14 +60,14 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     #print(big_string) *TEST MIDWAY
 
     # __init__
-    parameters = ''
-    for i in field_names:
-        parameters += f"{i}={defaults.get(i, 'None')}, "
-    parameters = parameters.rstrip(', ')  
-    big_string += (f'{tab}def __init__(self, {parameters}):{new}')
+    init_params = ''
+    for name in field_names:
+        init_params += f"{name}={defaults.get(name, 'None')}, "
+    init_params = init_params.rstrip(', ')  
+    big_string += f"{tab}def __init__(self, {init_params}):{new}"
     
-    for i in field_names:
-        big_string += (f'{tab*2}self.{i} = {i}{new}')
+    for name in field_names:
+        big_string += f"{tab*2}self.{name} = {name}{new}"
     big_string += new
     #print(big_string) *TEST MIDWAY
 
@@ -96,12 +96,11 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += (f'{tab*2}if not isinstance(other, self.__class__):{new}')
     big_string += (f'{tab*3}return NotImplemented{new}')
     big_string += (f'{tab*2}return all(getattr(self, name) == getattr(other, name) for name in self._fields){new}')
-    big_string += (f'{new}')
     #print(big_string) *TEST MIDWAY
 
     # asdict 
-    big_string += (f'{tab}def asdict(self):{new}')
-    big_string += (f"{tab*2}return self.asdict(){new*2}")
+    big_string += (f'{tab}def _asdict(self):{new}')
+    big_string += (f"{tab*2}return {{name: getattr(self, name) for name in self._fields}}{new*2}")
     #print(big_string) *TEST MIDWAY
 
     # make 
@@ -144,9 +143,3 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     namespace = {}
     exec(big_string, namespace)
     return namespace[type_name]
-
-# TESTERS
-coordinate = mynamedtuple('coordinate', ['x', 'y'], mutable=False)  # testing tuple number 1
-p = coordinate(0, 0)
-print(p)  # coordinate(x=0, y=0)
-print(p.asdict())  # {'x': 0, 'y': 0}
