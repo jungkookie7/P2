@@ -115,10 +115,15 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += "        if self._mutable:\n"
     big_string += "            for name, value in kwargs.items():\n"
     big_string += "                setattr(self, name, value)\n"
-    big_string += "            return self  # Return the modified instance\n"
+    big_string += "            return None  # Return None to indicate that this is mutable\n"
     big_string += "        else:\n"
     big_string += "            new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n"
     big_string += "            return self.__class__(**new_values)\n\n"
+
+    # _replace method
+    big_string += "    def _replace(self, **kwargs):\n"
+    big_string += "        new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n"
+    big_string += "        return self.__class__(**new_values)\n\n"
 
     # __setattr__ method
     big_string += "    def __setattr__(self, name, value):\n"
@@ -136,14 +141,3 @@ coordinate = mynamedtuple('coordinate', ['x', 'y'], mutable=False)  # testing tu
 p = coordinate(0, 0)
 print(p)  # coordinate(x=0, y=0)
 print(p.asdict())  # {'x': 0, 'y': 0}
-
-# Test for _make method
-point_data = (1, 2)
-p2 = coordinate._make(point_data)
-print(p2)  # coordinate(x=1, y=2)
-
-# Test for replace method
-mutable_coordinate = mynamedtuple('mutable_coordinate', ['a', 'b'], mutable=True)
-mutable_point = mutable_coordinate(1, 2)
-mutable_point = mutable_point.replace(a=3)  # Assign the return value to mutable_point
-print(mutable_point)  # mutable_coordinate(a=3, b=2)
