@@ -27,14 +27,14 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
             pass
 
     #testing for duplicates
-    a = []
+    empty_list = []
     seen = {}  
 
-    for name in field_names:
-        if name not in seen:
-            a.append(name)
-            seen[name] = True  
-    field_names = a
+    for i in field_names:
+        if i not in seen:
+            empty_list.append(i)
+            seen[i] = True  
+    field_names = empty_list
 
     #testing defaults
     if type(defaults) != dict: #tests if default is a str
@@ -46,70 +46,58 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
         else: #passes all tests
             pass
 
-    #class code
-    class_code = f"class {type_name}:\n"
-    class_code += f"    _fields = {field_names}\n"
-    class_code += f"    _mutable = {mutable}\n\n"
+    #TAB AND NEWLINE
+    tab = ('\t')
+    new = ('\n')
+
+    #large_string header
+    large_string = (f'{type_name}:')
+    large_string += new
+    large_string += (f'{tab}_fields = {field_names}')
+    large_string += new
+    large_string += (f'{tab}_mutable = {mutable}')
+    large_string += new
+    large_string += new
 
     # __init__ method
-    init_params = ', '.join([f"{name}={defaults.get(name, 'None')}" for name in field_names])
-    class_code += f"    def __init__(self, {init_params}):\n"
+    init_params = []
     for name in field_names:
-        class_code += f"        self.{name} = {name}\n"
-    class_code += "\n"
+        default_value = defaults.get(name, 'None')  # Get the default value or None
+        init_params.append(f"{name}={default_value}")  # Create parameter string
+
+    # Join the parameters into a single string
+    init_params_str = ', '.join(init_params)
+
+    # Add the __init__ method definition to class_code
+    large_string += (f'{tab}def __init__(self, {init_params_str}):\n')
+
+    # Add attribute assignments for each field in the __init__ method
+    for name in field_names:
+        large_string += (f'{tab}{tab}self.{name} = {name}')
+        large_string += new
+
+    large_string += new  
 
     # __repr__ method
-    class_code += "    def __repr__(self):\n"
-    repr_str = f"{type_name}(" + ', '.join([f"{name}={{self.{name}!r}}" for name in field_names]) + ")"
-    class_code += f"        return f'{repr_str}'\n\n"
+    large_string += (f'{tab}def __repr__(self):\n')
+    repr_fields_list = []  
 
-    # Accessor methods
-    for name in field_names:
-        class_code += f"    def get_{name}(self):\n"
-        class_code += f"        return self.{name}\n\n"
+    for name in field_names:  # Loop through each field name
+        repr_field = (f'{name}={{self.{name}!r}}')  # Create the representation for the field
+        repr_fields_list.append(repr_field)  # Append the field representation to the list
 
-    # __getitem__ method
-    class_code += "    def __getitem__(self, index):\n"
-    class_code += f"        return getattr(self, self._fields[index])\n\n"
+    # Join the list of field representations into a single string
+    repr_fields = ','.join(repr_fields_list)
 
-    # __eq__ method
-    class_code += "    def __eq__(self, other):\n"
-    class_code += "        if not isinstance(other, self.__class__):\n"
-    class_code += "            return NotImplemented\n"
-    class_code += "        return all(getattr(self, name) == getattr(other, name) for name in self._fields)\n\n"
+    # Format the full representation string
+    repr_str = (f'{type_name}({repr_fields})') 
 
-    # asdict method
-    class_code += "    def asdict(self):\n"
-    class_code += "        return {name: getattr(self, name) for name in self._fields}\n\n"
+    large_string += (f"{tab}return f'{repr_str}'\n\n")
+    large_string += new
+    large_string += new
 
-    # make method
-    class_code += "    @classmethod\n"
-    class_code += "    def make(cls, iterable):\n"
-    class_code += "        return cls(*iterable)\n\n"
-
-    # replace method
-    class_code += "    def replace(self, **kwargs):\n"
-    class_code += "        if self._mutable:\n"
-    class_code += "            for name, value in kwargs.items():\n"
-    class_code += "                setattr(self, name, value)\n"
-    class_code += "            return None\n"
-    class_code += "        else:\n"
-    class_code += "            new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n"
-    class_code += "            return self.__class__(**new_values)\n\n"
-
-    # __setattr__ method
-    class_code += "    def __setattr__(self, name, value):\n"
-    class_code += "        if not self._mutable and name in self._fields and hasattr(self, name):\n"
-    class_code += "            raise AttributeError(f'Cannot modify {name} in immutable {self.__class__.__name__}')\n"
-    class_code += "        super().__setattr__(name, value)\n"
-
-    # Execute the generated class code
-    namespace = {}
-    exec(class_code, namespace)
-    return namespace[type_name]
-
-#TESTERS
-coordinate = mynamedtuple('coordinate', ['x','y'], mutable=False) #testing tuple number 1
+#TESTS
+coordinate = mynamedtuple('coordinate', ['x','y'], mutable=False) 
 coordinate = mynamedtuple('coordinate', 'x y')
 p = coordinate(0, 0)
 print(p) # coordinate(x=0,y=0)
