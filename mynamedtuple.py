@@ -79,7 +79,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     for i in field_names:
         losing_it += f"{i}={{self.{i}!r}},"
     losing_it = losing_it.rstrip(', ')  
-    big_string += f'{tab*2}return f'{type_name}({losing_it})'
+    big_string += f"{tab*2}return f'{type_name}({losing_it})'"
     big_string += f'{new*2}'
     #print(big_string) *TEST MIDWAY
 
