@@ -57,6 +57,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += new
     big_string += (f'{tab}_mutable = {mutable}')
     big_string += new
+    #print(big_string) *TEST MIDWAY
 
     # __init__
     init_params = ''
@@ -68,6 +69,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     for name in field_names:
         big_string += f"{tab*2}self.{name} = {name}{new}"
     big_string += new
+    #print(big_string) *TEST MIDWAY
 
     # __repr__ 
     big_string += f"{tab}def __repr__(self):{new}"
@@ -75,62 +77,67 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     for name in field_names:
         repr_fields += f"{name}={{self.{name}!r}},"
     repr_fields = repr_fields.rstrip(', ')  
-    big_string += f"{tab*2}return f'{type_name}({repr_fields})'{new}{new}"
+    big_string += f"{tab*2}return f'{type_name}({repr_fields})'{new*2}"
+    #print(big_string) *TEST MIDWAY
 
     # query/accesors 
     for name in field_names:
         big_string += (f'{tab}def get_{name}(self):{new}')
         big_string += (f'{tab*2}return self.{name}{new*2}')
+    #print(big_string) *TEST MIDWAY
 
     # __getitem__ 
     big_string += (f'{tab}def __getitem__(self, index):{new}')
     big_string += (f'{tab*2}return getattr(self, self._fields[index]){new*2}')
+    #print(big_string) *TEST MIDWAY
 
     # __eq__ 
     big_string += (f'{tab}def __eq__(self, other):{new}')
     big_string += (f'{tab*2}if not isinstance(other, self.__class__):{new}')
     big_string += (f'{tab*3}return NotImplemented{new}')
     big_string += (f'{tab*2}return all(getattr(self, name) == getattr(other, name) for name in self._fields){new}')
+    #print(big_string) *TEST MIDWAY
 
     # asdict 
     big_string += (f'{tab}def asdict(self):{new}')
-    big_string += ('        return {name: getattr(self, name) for name in self._fields}')
-    big_string += (f'{new*2}')
-
-    # asdict 
-    big_string += (f'{tab}def asdict(self):{new}')
-    big_string += ('        return {name: getattr(self, name) for name in self._fields}')
-    big_string += (f'{new*2}')    
+    big_string += (f"{tab*2}return {{name: getattr(self, name) for name in self._fields}}{new*2}")
+    #print(big_string) *TEST MIDWAY
 
     # make 
     big_string += (f'{tab}@classmethod{new}')
     big_string += (f'{tab}def make(cls, iterable):{new}')
     big_string += (f'{tab*2}return cls(*iterable){new*2}')
+    #print(big_string) *TEST MIDWAY
 
     # _make 
     big_string += (f'{tab}@classmethod{new}')
     big_string += (f'{tab}def _make(cls, iterable):{new}')
     big_string += (f'{tab*2}return cls(*iterable){new*2}')
+    #print(big_string) *TEST MIDWAY
 
     # replace 
-    big_string += f"{tab}def replace(self, **kwargs):{new}"
-    big_string += f"{tab*2}if self._mutable:{new}"
-    big_string += f"{tab*3}for name, value in kwargs.items():{new}"
-    big_string += f"{tab*4}if name in self._fields:{new}"
-    big_string += f"{tab*5}object.__setattr__(self, name, value){new}"
-    big_string += f"{tab*3}return {None}{new}"
+    big_string += (f'{tab}def replace(self, **kwargs):{new}')
+    big_string += (f'{tab*2}if self._mutable:{new}')
+    big_string += (f'{tab*3}for name, value in kwargs.items():{new}')
+    big_string += (f'{tab*4}if name in self._fields:{new}')
+    big_string += (f'{tab*5}object.__setattr__(self, name, value){new}')
+    big_string += (f'{tab*3}return {None}{new}')
+    print(big_string) 
+    #WHY IS IT NOT WORKING
 
     # _replace 
-    big_string += "    def _replace(self, **kwargs):\n"
-    big_string += "        new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n"
-    big_string += "        return self.__class__(**new_values)\n\n"
+    big_string += (f'{tab}def _replace(self, **kwargs):{new}')
+    big_string += '        new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n'
+    big_string += (f'{tab*2}return self.__class__(**new_values){new*2}')
+    #print(big_string) *TEST MIDWAY
 
     # __setattr__ 
-    big_string += "    def __setattr__(self, name, value):\n"
-    big_string += "        if self._mutable or name not in self._fields or not hasattr(self, name):\n"
-    big_string += "            object.__setattr__(self, name, value)\n"
-    big_string += "        else:\n"
-    big_string += "            raise AttributeError(f'Cannot modify {name} in immutable {self.__class__.__name__}')\n"
+    big_string += (f'{tab}def __setattr__(self, name, value):{new}')
+    big_string += (f'{tab*2}if self._mutable or name not in self._fields or not hasattr(self, name):{new}')
+    big_string += (f'{tab*3}object.__setattr__(self, name, value){new}')
+    big_string += (f'{tab*2}else:{new}')
+    big_string += (f'{tab*3}raise AttributeError{new}')
+    #print(big_string) *TEST MIDWAY
 
     # exec
     namespace = {}
