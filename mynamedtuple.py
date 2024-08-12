@@ -139,10 +139,14 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
     # __setattr__ 
     big_string += (f'{tab}def __setattr__(self, name, value):{new}')
-    big_string += (f'{tab*2}if self._mutable or name not in self._fields or not hasattr(self, name):{new}')
+    big_string += (f'{tab*2}if self._mutable:{new}')
+    big_string += (f'{tab*3}object.__setattr__(self, name, value){new}')
+    big_string += (f'{tab*2}elif name not in self._fields:{new}')
+    big_string += (f'{tab*3}object.__setattr__(self, name, value){new}')
+    big_string += (f'{tab*2}elif not hasattr(self, name):{new}')
     big_string += (f'{tab*3}object.__setattr__(self, name, value){new}')
     big_string += (f'{tab*2}else:{new}')
-    big_string += (f'{tab*3}raise AttributeError{new}')
+    big_string += (f'{tab*3}raise AttributeError{new}'
     #print(big_string) *TEST MIDWAY
 
     # exec
