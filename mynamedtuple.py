@@ -121,7 +121,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
     # replace 
     big_string += (f'{tab}def replace(self, **kwargs):{new}')
-    big_string += (f'{tab*2}pass{new}'
+    big_string += (f'{tab*2}pass{new}')
     #print(big_string) 
     #WHY IS IT NOT WORKING
 
