@@ -64,7 +64,8 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     for i in field_names:
         parameters += (f"{i}={defaults.get(i, 'None')}, ")
     parameters = parameters[:-2]
-    big_string += (f'{tab}def __init__(self, {parameters}):{new}')
+    big_string += (f'{tab}def __init__(self, {parameters}):')
+    big_string += f'{new}'
     
     for i in field_names:
         big_string += (f'{tab*2}self.{i} = {i}{new}')
@@ -72,12 +73,14 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     #print(big_string) *TEST MIDWAY
 
     # __repr__ 
-    big_string += (f'{tab}def __repr__(self):{new}')
+    big_string += (f'{tab}def __repr__(self):')
+    big_string += f'{new}'
     losing_it = ''
     for i in field_names:
         losing_it += f"{i}={{self.{i}!r}},"
     losing_it = losing_it.rstrip(', ')  
-    big_string += f"{tab*2}return f'{type_name}({losing_it})'{new*2}"
+    big_string += f'{tab*2}return f'{type_name}({losing_it})'
+    big_string += f'{new*2}'
     #print(big_string) *TEST MIDWAY
 
     # query/accesors 
