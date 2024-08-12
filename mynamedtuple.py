@@ -131,14 +131,19 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     #print(big_string) *TEST MIDWAY
 
     # _make 
-    big_string += (f'{tab}@classmethod{new}')
-    big_string += (f'{tab}def _make(banana, iterable):{new}')
-    big_string += (f'{tab*2}return banana(*iterable){new*2}')
+    big_string += (f'{tab}@classmethod')
+    big_string += f'{new}'
+    big_string += (f'{tab}def _make(banana, iterable):')
+    big_string += f'{new}'
+    big_string += (f'{tab*2}return banana(*iterable)')
+    big_string += f'{new*2}'
     #print(big_string) *TEST MIDWAY
 
     # replace 
-    big_string += (f'{tab}def replace(self, **kwargs):{new}')
-    big_string += (f'{tab*2}pass{new}')
+    big_string += (f'{tab}def replace(self, **kwargs):')
+    big_string += f'{new}'
+    big_string += (f'{tab*2}pass')
+    big_string += f'{new}'
     #print(big_string) 
     #WHY IS IT NOT WORKING
 
