@@ -51,22 +51,46 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     tab = ('    ')
 
     #class code
-    class_code = (f'class {type_name}:{new}')
-    class_code += (f"{tab}_fields = {field_names}{new}")
-    class_code += (f"{tab}_mutable = {mutable}{new}")
+    class_code = (f'class {type_name}:')
+    class_code += new
+    class_code += (f'{tab}_fields = {field_names}')
+    class_code += new
+    class_code += (f'{tab}_mutable = {mutable}')
+    class_code += new
 
-    # __init__ method
-    init_params = ','.join([f"{name}={defaults.get(name, 'None')}" for name in field_names])
-    class_code += f"    def __init__(self, {init_params}):\n"
+    # __init__
+    class_code += (f'{tab}def __init__(self')
+
     for name in field_names:
-        class_code += f"        self.{name} = {name}\n"
-    class_code += "\n"
+        default_value = defaults.get(name, 'None')  # Get the default value or None
+        class_code += f", {name}={default_value!r}"  # Add the parameter to the method signature
 
-    # __repr__ method
+    class_code += "):\n"  # End of method signature
+
+    # Assign each parameter to the corresponding instance attribute
+    for name in field_names:
+        class_code += f"        self.{name} = {name}\n"  # Set the attribute
+
+    class_code += "\n"  # Add a newline after the method
+
+
+    # __repr__ 
     class_code += "    def __repr__(self):\n"
-    repr_str = f"{type_name}(" + ','.join([f"{name}={{self.{name}!r}}" for name in field_names]) + ")"
-    class_code += f"        print(f'Calling __repr__: {repr_str}')  # Debug print statement\n"  # Added for debugging
-    class_code += f"        return f'{repr_str}'\n\n"
+
+    # Prepare the field representations
+    field_representations = []
+    for name in field_names:
+        field_representation = f"{name}={{self.{name}!r}}"
+        field_representations.append(field_representation)
+
+    # Join the field representations into a single string
+    repr_fields = ','.join(field_representations)
+
+    # Format the full representation string
+    repr_str = f"{type_name}({repr_fields})"
+
+    class_code += f"        return f'{repr_str}'\n\n"  # Return the formatted string
+
 
     # Accessor methods
     for name in field_names:
