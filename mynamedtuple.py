@@ -50,13 +50,30 @@ class coordinate:
     _fields = ['x', 'y']
     _mutable = False
 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self, type_name, field_names, mutable = False, defaults={}):
+        self.type_name = type_name
+        self._fields = field_names.split()
+        self._mutable = mutable
+        self.defaults = defaults
+        
+        # Dynamically create the __init__ method
+        init_code = "def __init__(self, " + ", ".join(
+            f"{field}={defaults.get(field, '')!r}" if field in defaults else field
+            for field in self._fields
+        ) + "):\n"
+        
+        # Initialize fields
+        for field in self._fields:
+            init_code += f"    self.{field} = {field}\n"
+        
+        # Execute the dynamically created __init__ method
+        exec(init_code, globals(), locals())
+        self.__init__ = locals()['__init__']
 
     def __repr__(self):
-        pass
-
+        fields_repr = ", ".join(f"{field}={repr(getattr(self, field))}" for field in self._fields)
+        return f"{self.type_name}({fields_repr})"
+    
     def get_x(self):
         return self.x
     def get_y(self):
