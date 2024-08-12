@@ -8,7 +8,7 @@ class DictTuple:
             raise AssertionError
         for i in args:
             if type(i) != dict:
-                raise AssertionError
+                raise AssertionError('not a dict')
             if not i:
                 raise AssertionError
             self.dt.append(i)
@@ -48,7 +48,7 @@ class DictTuple:
         for i in reversed_dicts:
             if key in i:
                 return i[key]
-        raise KeyError
+        raise KeyError('key is in no dictionaries in list')
 
     def __setitem__(self, key, value):
         reversed_dicts = reversed(self.dt)
@@ -123,7 +123,7 @@ class DictTuple:
             else:
                 raise AssertionError       
         else:
-            raise TypeError
+            raise TypeError('not DictTuple or dict')
 
     def __setattr__(self, name, value):
         if name == "dt":
