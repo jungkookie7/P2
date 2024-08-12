@@ -59,38 +59,16 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     class_code += new
 
     # __init__
-    class_code += (f'{tab}def __init__(self')
-
+    init_params = ', '.join([f"{name}={defaults.get(name, 'None')}" for name in field_names])
+    class_code += f"    def __init__(self, {init_params}):\n"
     for name in field_names:
-        default_value = defaults.get(name, 'None')  # Get the default value or None
-        class_code += f", {name}={default_value!r}"  # Add the parameter to the method signature
-
-    class_code += "):\n"  # End of method signature
-
-    # Assign each parameter to the corresponding instance attribute
-    for name in field_names:
-        class_code += f"        self.{name} = {name}\n"  # Set the attribute
-
-    class_code += "\n"  # Add a newline after the method
-
+        class_code += f"        self.{name} = {name}\n"
+    class_code += "\n"
 
     # __repr__ 
     class_code += "    def __repr__(self):\n"
-
-    # Prepare the field representations
-    field_representations = []
-    for name in field_names:
-        field_representation = f"{name}={{self.{name}!r}}"
-        field_representations.append(field_representation)
-
-    # Join the field representations into a single string
-    repr_fields = ','.join(field_representations)
-
-    # Format the full representation string
-    repr_str = f"{type_name}({repr_fields})"
-
-    class_code += f"        return f'{repr_str}'\n\n"  # Return the formatted string
-
+    repr_str = f"{type_name}(" + ','.join([f"{name}={{self.{name}!r}}" for name in field_names]) + ")"
+    class_code += f"        return f'{repr_str}'\n\n"
 
     # Accessor methods
     for name in field_names:
