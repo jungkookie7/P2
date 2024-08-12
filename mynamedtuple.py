@@ -62,7 +62,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     init_params = ''
     for name in field_names:
         init_params += f"{name}={defaults.get(name, 'None')}, "
-    init_params = init_params.rstrip(', ')  # Remove the trailing comma and space
+    init_params = init_params.rstrip(', ')  
     big_string += f"{tab}def __init__(self, {init_params}):{new}"
     
     for name in field_names:
@@ -74,8 +74,6 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     repr_fields = ''
     for name in field_names:
         repr_fields += f"{name}={{self.{name}!r}},"
-        #repr_fields = repr_fields.rstrip(', ')  
-        #print(repr_fields)
     repr_fields = repr_fields.rstrip(', ')  
     big_string += f"{tab*2}return f'{type_name}({repr_fields})'{new}{new}"
 
@@ -98,9 +96,18 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += "    def asdict(self):\n"
     big_string += "        return {name: getattr(self, name) for name in self._fields}\n\n"
 
+    # asdict method
+    big_string += "    def asdict(self):\n"
+    big_string += "        return {name: getattr(self, name) for name in self._fields}\n\n"
+
     # make method
     big_string += "    @classmethod\n"
     big_string += "    def make(cls, iterable):\n"
+    big_string += "        return cls(*iterable)\n\n"
+
+    # _make method
+    big_string += "    @classmethod\n"
+    big_string += "    def _make(cls, iterable):\n"
     big_string += "        return cls(*iterable)\n\n"
 
     # replace method
@@ -126,7 +133,11 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
 # TESTERS
 coordinate = mynamedtuple('coordinate', ['x', 'y'], mutable=False)  # testing tuple number 1
-coordinate = mynamedtuple('coordinate', 'x y')
 p = coordinate(0, 0)
 print(p)  # coordinate(x=0, y=0)
 print(p.asdict())  # {'x': 0, 'y': 0}
+
+# Test for _make method
+point_data = (1, 2)
+p2 = coordinate._make(point_data)
+print(p2)  # coordinate(x=1, y=2)
