@@ -85,24 +85,32 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
     # query/accesors 
     for i in field_names:
-        big_string += (f'{tab}def get_{i}(self):{new}')
+        big_string += (f'{tab}def get_{i}(self):')
+        big_string += f'{new}'
         big_string += (f'{tab*2}return self.{i}')
         big_string += f'{new*2}'
     #print(big_string) *TEST MIDWAY
 
     # __getitem__ 
-    big_string += (f'{tab}def __getitem__(self, index):{new}')
+    big_string += (f'{tab}def __getitem__(self, index):')
+    big_string += f'{new}'
     big_string += (f'{tab*2}return getattr(self, self._fields[index])')
     big_string += f'{new*2}'
     #print(big_string) *TEST MIDWAY
 
     # __eq__
-    big_string += (f'{tab}def __eq__(self, other):{new}')
-    big_string += (f'{tab*2}if type(other) != self.__class__:{new}')
-    big_string += (f'{tab*3}return False{new}')
-    big_string += (f'{tab*2}for name in self._fields:{new}')
-    big_string += (f'{tab*3}if getattr(self, name) != getattr(other, name):{new}')
-    big_string += (f'{tab*4}return False{new}')
+    big_string += (f'{tab}def __eq__(self, other):')
+    big_string += f'{new}'
+    big_string += (f'{tab*2}if type(other) != self.__class__:')
+    big_string += f'{new}'
+    big_string += (f'{tab*3}return False')
+    big_string += f'{new}'
+    big_string += (f'{tab*2}for name in self._fields:')
+    big_string += f'{new}'
+    big_string += (f'{tab*3}if getattr(self, name) != getattr(other, name):')
+    big_string += f'{new}'
+    big_string += (f'{tab*4}return False')
+    big_string += f'{new}'
     big_string += (f'{tab*2}return True')
     big_string += f'{new*2}'
     #print(big_string) *TEST MIDWAY
