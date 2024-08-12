@@ -151,9 +151,3 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     namespace = {}
     exec(big_string, namespace)
     return namespace[type_name]
-
-#TESTERS
-coordinate = mynamedtuple(’coordinate’, ’x y’)
-p = coordinate(0, 0)
-print(p) # coordinate(x=0,y=0)
-print(p._asdict()) #{’x’: 0, ’y’: 0}
