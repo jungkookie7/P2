@@ -2,47 +2,39 @@ import keyword
 
 def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     #testing type_name
-    if type(type_name) != str:
-        print('not a string')
+    if type(type_name) != str: #test if a string
         raise SyntaxError
-    elif not type_name[0].isalpha():
-        print('first element not a letter')
+    elif not type_name[0].isalpha(): #test if first element is letter 
         raise SyntaxError
-    elif keyword.iskeyword(type_name):
-        print('conflicts w keywords')
+    elif keyword.iskeyword(type_name): #test if conflicts with keywords
         raise SyntaxError
-    else:
-        print('type_names test passed')
+    else: #passes all tests
+        pass
     
     #testing field_names
-    if type(field_names) == str:
+    if type(field_names) == str: #tests if str, if so splits
         field_names = field_names.replace(',', ' ').split()
 
-    if type(field_names) != list or len(field_names) == 0:
-        print('not a list or empty')
+    if type(field_names) != list or len(field_names) == 0: #tests if field_name is NOT a list or a empty
         raise SyntaxError
 
     for i in field_names:
-        if not field_names[0].isalpha():
-            print('first element not a letter')
+        if not field_names[0].isalpha(): #tests if first element is letter
             raise SyntaxError
-        elif keyword.iskeyword(i):
-            print('conflicts w keywords')
+        elif keyword.iskeyword(i): #tests if conflicts with keywords
             raise SyntaxError
-        else:
-            print(f'field_names element [{i}] passed')
+        else: #passes all tests
+            pass
 
     #testing defaults
-    if type(defaults) != dict:
-        print('not a dict')
+    if type(defaults) != dict: #tests if default is a str
         raise SyntaxError
     
     for i in defaults:
-        if i not in field_names:
-            print(f'{i} not in field_name')
+        if i not in field_names: #tests if element is in field_name
             raise SyntaxError
-        else:
-            print(f'{i} in field_names passed')
+        else: #passes all tests
+            pass
     
 class coordinate:
     _fields = ['x', 'y']
