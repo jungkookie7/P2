@@ -3,11 +3,11 @@ import keyword
 def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     # testing type_name
     if type(type_name) != str: 
-        raise SyntaxError
+        raise SyntaxError('not a string')
     elif not type_name[0].isalpha():  
-        raise SyntaxError
+        raise SyntaxError('first element not a letter')
     elif keyword.iskeyword(type_name):  
-        raise SyntaxError
+        raise SyntaxError('first element is a keyword')
     else:  
         pass
     
@@ -16,13 +16,13 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
         field_names = field_names.replace(',', ' ').split()
 
     if type(field_names) != list or len(field_names) == 0:  
-        raise SyntaxError
+        raise SyntaxError('not list OR empty')
 
     for i in field_names:
         if not i[0].isalpha():  
-            raise SyntaxError
+            raise SyntaxError('first element not a letter')
         elif keyword.iskeyword(i):  
-            raise SyntaxError
+            raise SyntaxError('first element is a keyword')
         else:  
             pass
 
@@ -38,11 +38,11 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
     # testing defaults
     if type(defaults) != dict:  
-        raise SyntaxError
+        raise SyntaxError('not a dict')
     
     for i in defaults:
         if i not in field_names:  
-            raise SyntaxError
+            raise SyntaxError ('element i not a field_names')
         else: 
             pass
     
