@@ -121,11 +121,6 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
     # replace 
     big_string += (f'{tab}def replace(self, **kwargs):{new}')
-    big_string += (f'{tab*2}if self._mutable:{new}')
-    big_string += (f'{tab*3}for name, value in kwargs.items():{new}')
-    big_string += (f'{tab*4}if name in self._fields:{new}')
-    big_string += (f'{tab*5}object.__setattr__(self, name, value){new}')
-    big_string += (f'{tab*3}return {None}{new}')
     #print(big_string) 
     #WHY IS IT NOT WORKING
 
