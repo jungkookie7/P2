@@ -104,7 +104,11 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
     # asdict 
     big_string += (f'{tab}def _asdict(self):{new}')
-    big_string += (f"{tab*2}return {{name: getattr(self, name) for name in self._fields}}{new*2}")
+    big_string += (f'{tab*2}result = {{{new}')
+    big_string += (f'{tab*3}name: getattr(self, name){new}')
+    big_string += (f'{tab*3}for name in self._fields{new}')
+    big_string += (f'{tab*2}}}{new}')
+    big_string += (f'{tab*2}return result{new*2}')
     #print(big_string) *TEST MIDWAY
 
     # make 
@@ -126,7 +130,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += (f'{tab*4}if name in self._fields:{new}')
     big_string += (f'{tab*5}object.__setattr__(self, name, value){new}')
     big_string += (f'{tab*3}return {None}{new}')
-    print(big_string) 
+    #print(big_string) 
     #WHY IS IT NOT WORKING
 
     # _replace 
