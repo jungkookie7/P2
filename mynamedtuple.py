@@ -134,10 +134,9 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += (f'{tab*3}else:{new}')
     big_string += (f'{tab*4}new_values[name] = getattr(self, name){new*2}')
     big_string += (f'{tab*2}return self.__class__(**new_values){new*2}')
-
     #print(big_string) *TEST MIDWAY
 
-    # __setattr__ 
+    # __setattr__
     big_string += (f'{tab}def __setattr__(self, name, value):{new}')
     big_string += (f'{tab*2}if self._mutable:{new}')
     big_string += (f'{tab*3}object.__setattr__(self, name, value){new}')
@@ -146,7 +145,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += (f'{tab*2}elif not hasattr(self, name):{new}')
     big_string += (f'{tab*3}object.__setattr__(self, name, value){new}')
     big_string += (f'{tab*2}else:{new}')
-    big_string += (f'{tab*3}raise AttributeError{new}'
+    big_string += (f'{tab*3}raise AttributeError')
     #print(big_string) *TEST MIDWAY
 
     # exec
