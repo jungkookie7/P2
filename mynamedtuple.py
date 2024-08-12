@@ -73,8 +73,10 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += f"{tab}def __repr__(self):{new}"
     repr_fields = ''
     for name in field_names:
-        repr_fields += f"{name}={{self.{name}!r}}, "
-    repr_fields = repr_fields.rstrip(', ')  # Remove the trailing comma and space
+        repr_fields += f"{name}={{self.{name}!r}},"
+        #repr_fields = repr_fields.rstrip(', ')  
+        #print(repr_fields)
+    repr_fields = repr_fields.rstrip(', ')  
     big_string += f"{tab*2}return f'{type_name}({repr_fields})'{new}{new}"
 
     # Accessor methods
