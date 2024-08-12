@@ -120,6 +120,11 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += "            new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n"
     big_string += "            return self.__class__(**new_values)\n\n"
 
+    # _replace method
+    big_string += "    def _replace(self, **kwargs):\n"
+    big_string += "        new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n"
+    big_string += "        return self.__class__(**new_values)\n\n"
+
     # __setattr__ method
     big_string += "    def __setattr__(self, name, value):\n"
     big_string += "        if not self._mutable and name in self._fields and hasattr(self, name):\n"
@@ -141,3 +146,7 @@ print(p.asdict())  # {'x': 0, 'y': 0}
 point_data = (1, 2)
 p2 = coordinate._make(point_data)
 print(p2)  # coordinate(x=1, y=2)
+
+# Test for _replace method
+p3 = p._replace(x=10)
+print(p3)  # coordinate(x=10, y=0)
