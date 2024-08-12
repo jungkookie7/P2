@@ -116,12 +116,18 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     #print(big_string) *TEST MIDWAY
 
     # asdict 
-    big_string += (f'{tab}def _asdict(self):{new}')
-    big_string += (f'{tab*2}result = {{{new}')
-    big_string += (f'{tab*3}name: getattr(self, name){new}')
-    big_string += (f'{tab*3}for name in self._fields{new}')
-    big_string += (f'{tab*2}}}{new}')
-    big_string += (f'{tab*2}return result{new*2}')
+    big_string += (f'{tab}def _asdict(self):')
+    big_string += f'{new}'
+    big_string += (f'{tab*2}result = {{')
+    big_string += f'{new}'
+    big_string += (f'{tab*3}name: getattr(self, name)')
+    big_string += f'{new}'
+    big_string += (f'{tab*3}for name in self._fields')
+    big_string += f'{new}'
+    big_string += (f'{tab*2}}}')
+    big_string += f'{new}'
+    big_string += (f'{tab*2}return result')
+    big_string += f'{new*2}'
     #print(big_string) *TEST MIDWAY
 
     # _make 
