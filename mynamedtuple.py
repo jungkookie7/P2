@@ -1,48 +1,65 @@
 import keyword
 
 def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
-    # Validate type_name
-    if not isinstance(type_name, str):  # Test if a string
-        raise SyntaxError("Type name must be a string")
-    if not type_name[0].isalpha():  # Test if first element is letter 
-        raise SyntaxError("Type name must start with a letter")
-    if keyword.iskeyword(type_name):  # Test if conflicts with keywords
-        raise SyntaxError("Type name cannot be a keyword")
-
-    # Validate field_names
-    if isinstance(field_names, str):  # Tests if str, if so splits
+    #testing type_name
+    if type(type_name) != str: #test if a string
+        raise SyntaxError
+    elif not type_name[0].isalpha(): #test if first element is letter 
+        raise SyntaxError
+    elif keyword.iskeyword(type_name): #test if conflicts with keywords
+        raise SyntaxError
+    else: #passes all tests
+        pass
+    
+    #testing field_names
+    if type(field_names) == str: #tests if str, if so splits
         field_names = field_names.replace(',', ' ').split()
 
-    if not isinstance(field_names, list) or not field_names:  # Tests if field_name is NOT a list or empty
-        raise SyntaxError("Field names must be a non-empty list")
+    if type(field_names) != list or len(field_names) == 0: #tests if field_name is NOT a list or a empty
+        raise SyntaxError
+
+    for i in field_names:
+        if not field_names[0].isalpha(): #tests if first element is letter
+            raise SyntaxError
+        elif keyword.iskeyword(i): #tests if conflicts with keywords
+            raise SyntaxError
+        else: #passes all tests
+            pass
+
+    #testing for duplicates
+    a = []
+    seen = {}  
 
     for name in field_names:
-        if not name[0].isalpha():  # Tests if first element is letter
-            raise SyntaxError(f"Field name '{name}' must start with a letter")
-        if keyword.iskeyword(name):  # Tests if conflicts with keywords
-            raise SyntaxError(f"Field name '{name}' cannot be a keyword")
+        if name not in seen:
+            a.append(name)
+            seen[name] = True  
+    field_names = a
 
-    # Remove duplicates
-    field_names = list(dict.fromkeys(field_names))  # Preserves order and removes duplicates
-
-    # Validate defaults
-    if not isinstance(defaults, dict):  # Tests if defaults is a dict
-        raise SyntaxError("Defaults must be a dictionary")
+    #testing defaults
+    if type(defaults) != dict: #tests if default is a str
+        raise SyntaxError
     
-    for key in defaults:
-        if key not in field_names:  # Tests if element is in field_name
-            raise SyntaxError(f"Default value for '{key}' not in field names")
+    for i in defaults:
+        if i not in field_names: #tests if element is in field_name
+            raise SyntaxError
+        else: #passes all tests
+            pass
+    
+    #new line and tab
+    new = ('\n')
+    tab = ('    ')
 
-    # Prepare class code
-    new = '\n'
-    tab = '    '
+    #class code
+    class_code = (f'class {type_name}:')
+    class_code += new
+    class_code += (f'{tab}_fields = {field_names}')
+    class_code += new
+    class_code += (f'{tab}_mutable = {mutable}')
+    class_code += new
 
-    class_code = f'class {type_name}:{new}'
-    class_code += f'{tab}_fields = {field_names}{new}'
-    class_code += f'{tab}_mutable = {mutable}{new}'
-
-    # __init__ method
-    init_params = ', '.join(f"{name}={defaults.get(name, 'None')}" for name in field_names)
+    #__init__
+    init_params = ','.join(f"{name}={defaults.get(name, 'None')}" for name in field_names)
     class_code += f"{tab}def __init__(self, {init_params}):{new}"
     for name in field_names:
         class_code += f"{tab*2}self.{name} = {name}{new}"
@@ -50,56 +67,57 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
     # __repr__ method
     class_code += f"{tab}def __repr__(self):{new}"
-    repr_fields = ','.join(f"{name}={{self.{name}!r}}" for name in field_names)  # No space after comma
+    repr_fields = ','.join(f"{name}={{self.{name}!r}}" for name in field_names)
     class_code += f"{tab*2}return f'{type_name}({repr_fields})'{new}{new}"
 
     # Accessor methods
     for name in field_names:
-        class_code += f"{tab}def get_{name}(self):{new}"
-        class_code += f"{tab*2}return self.{name}{new}{new}"
+        class_code += f"    def get_{name}(self):\n"
+        class_code += f"        return self.{name}\n\n"
 
     # __getitem__ method
-    class_code += f"{tab}def __getitem__(self, index):{new}"
-    class_code += f"{tab*2}return getattr(self, self._fields[index]){new}{new}"
+    class_code += "    def __getitem__(self, index):\n"
+    class_code += f"        return getattr(self, self._fields[index])\n\n"
 
     # __eq__ method
-    class_code += f"{tab}def __eq__(self, other):{new}"
-    class_code += f"{tab*2}if not isinstance(other, self.__class__):{new}"
-    class_code += f"{tab*3}return NotImplemented{new}"
-    class_code += f"{tab*2}return all(getattr(self, name) == getattr(other, name) for name in self._fields){new}{new}"
+    class_code += "    def __eq__(self, other):\n"
+    class_code += "        if not isinstance(other, self.__class__):\n"
+    class_code += "            return NotImplemented\n"
+    class_code += "        return all(getattr(self, name) == getattr(other, name) for name in self._fields)\n\n"
 
     # asdict method
-    class_code += f"{tab}def asdict(self):{new}"
-    class_code += f"{tab*2}return {{name: getattr(self, name) for name in self._fields}}{new}{new}"
+    class_code += "    def asdict(self):\n"
+    class_code += "        return {name: getattr(self, name) for name in self._fields}\n\n"
 
     # make method
-    class_code += f"{tab}@classmethod{new}"
-    class_code += f"{tab}def make(cls, iterable):{new}"
-    class_code += f"{tab*2}return cls(*iterable){new}{new}"
+    class_code += "    @classmethod\n"
+    class_code += "    def make(cls, iterable):\n"
+    class_code += "        return cls(*iterable)\n\n"
 
     # replace method
-    class_code += f"{tab}def replace(self, **kwargs):{new}"
-    class_code += f"{tab*2}if self._mutable:{new}"
-    class_code += f"{tab*3}for name, value in kwargs.items():{new}"
-    class_code += f"{tab*4}setattr(self, name, value){new}"
-    class_code += f"{tab*3}return None{new}"
-    class_code += f"{tab*2}else:{new}"
-    class_code += f"{tab*3}new_values = {{name: kwargs.get(name, getattr(self, name)) for name in self._fields}}{new}"
-    class_code += f"{tab*3}return self.__class__(**new_values){new}{new}"
+    class_code += "    def replace(self, **kwargs):\n"
+    class_code += "        if self._mutable:\n"
+    class_code += "            for name, value in kwargs.items():\n"
+    class_code += "                setattr(self, name, value)\n"
+    class_code += "            return None\n"
+    class_code += "        else:\n"
+    class_code += "            new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n"
+    class_code += "            return self.__class__(**new_values)\n\n"
 
     # __setattr__ method
-    class_code += f"{tab}def __setattr__(self, name, value):{new}"
-    class_code += f"{tab*2}if not self._mutable and name in self._fields and hasattr(self, name):{new}"
-    class_code += f"{tab*3}raise AttributeError(f'Cannot modify {name} in immutable {self.__class__.__name__}'){new}"
-    class_code += f"{tab*2}super().__setattr__(name, value){new}"
+    class_code += "    def __setattr__(self, name, value):\n"
+    class_code += "        if not self._mutable and name in self._fields and hasattr(self, name):\n"
+    class_code += "            raise AttributeError(f'Cannot modify {name} in immutable {self.__class__.__name__}')\n"
+    class_code += "        super().__setattr__(name, value)\n"
 
     # Execute the generated class code
     namespace = {}
     exec(class_code, namespace)
     return namespace[type_name]
 
-# TESTERS
-coordinate = mynamedtuple('coordinate', ['x', 'y'], mutable=False)
+#TESTERS
+coordinate = mynamedtuple('coordinate', ['x','y'], mutable=False) #testing tuple number 1
+coordinate = mynamedtuple('coordinate', 'x y')
 p = coordinate(0, 0)
-print(p)  # coordinate(x=0, y=0)
-print(p.asdict())  # {'x': 0, 'y': 0}
+print(p) # coordinate(x=0,y=0)
+print(p.asdict()) #{’x’: 0, ’y’: 0}
