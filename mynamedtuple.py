@@ -99,7 +99,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     #print(big_string) *TEST MIDWAY
 
     # asdict 
-    big_string += (f'{tab}def asdict(self):{new}')
+    big_string += (f'{tab}def _asdict(self):{new}')
     big_string += (f"{tab*2}return {{name: getattr(self, name) for name in self._fields}}{new*2}")
     #print(big_string) *TEST MIDWAY
 
