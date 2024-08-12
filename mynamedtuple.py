@@ -83,7 +83,8 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     # query/accesors 
     for i in field_names:
         big_string += (f'{tab}def get_{i}(self):{new}')
-        big_string += (f'{tab*2}return self.{i}{new*2}')
+        big_string += (f'{tab*2}return self.{i}')
+        big_string += f'{new*2}'
     #print(big_string) *TEST MIDWAY
 
     # __getitem__ 
@@ -99,7 +100,8 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += (f'{tab*2}for name in self._fields:{new}')
     big_string += (f'{tab*3}if getattr(self, name) != getattr(other, name):{new}')
     big_string += (f'{tab*4}return False{new}')
-    big_string += (f'{tab*2}return True{new*2}')
+    big_string += (f'{tab*2}return True')
+    big_string += f'{new*2}'
     #print(big_string) *TEST MIDWAY
 
     # asdict 
