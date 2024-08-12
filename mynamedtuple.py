@@ -113,12 +113,6 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += (f'{tab*2}return result{new*2}')
     #print(big_string) *TEST MIDWAY
 
-    # make 
-    big_string += (f'{tab}@classmethod{new}')
-    big_string += (f'{tab}def make(cls, iterable):{new}')
-    big_string += (f'{tab*2}return cls(*iterable){new*2}')
-    #print(big_string) *TEST MIDWAY
-
     # _make 
     big_string += (f'{tab}@classmethod{new}')
     big_string += (f'{tab}def _make(cls, iterable):{new}')
