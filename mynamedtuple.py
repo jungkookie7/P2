@@ -68,14 +68,22 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     for name in field_names:
         big_string += f"{tab*2}self.{name} = {name}{new}"
     big_string += new
+    
+    for i in field_names:
+        big_string += (f'{tab}{tab}self.{i} = {i}')
+        big_string += new
+    big_string += new
 
     # __repr__ method
-    big_string += f"{tab}def __repr__(self):{new}"
+    big_string += (f'{tab}def __repr__(self):')
+    big_string += new
     repr_fields = ''
     for name in field_names:
         repr_fields += f"{name}={{self.{name}!r}},"
     repr_fields = repr_fields.rstrip(', ')  
-    big_string += f"{tab*2}return f'{type_name}({repr_fields})'{new}{new}"
+    big_string += f"{tab}{tab}return f'{type_name}({repr_fields})'"
+    big_string += new
+    big_string += new
 
     # Accessor methods
     for name in field_names:
@@ -111,6 +119,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += "        return cls(*iterable)\n\n"
 
     # replace method
+    # replace method
     big_string += "    def replace(self, **kwargs):\n"
     big_string += "        if self._mutable:\n"
     big_string += "            for name, value in kwargs.items():\n"
@@ -119,7 +128,8 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += "            return None  # Return None to indicate that this is mutable\n"
     big_string += "        else:\n"
     big_string += "            new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n"
-    big_string += "            return self.class(new_values)\n\n"
+    big_string += "            return self.__class__(**new_values)  # Use self.__class__ to create a new instance\n\n"
+
 
     # _replace method
     big_string += "    def _replace(self, **kwargs):\n"
