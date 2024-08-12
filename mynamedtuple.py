@@ -2,55 +2,55 @@ import keyword
 
 def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     # testing type_name
-    if type(type_name) != str:  # test if a string
+    if type(type_name) != str:  
         raise SyntaxError
-    elif not type_name[0].isalpha():  # test if first element is letter
+    elif not type_name[0].isalpha():  
         raise SyntaxError
-    elif keyword.iskeyword(type_name):  # test if conflicts with keywords
+    elif keyword.iskeyword(type_name):  
         raise SyntaxError
-    else:  # passes all tests
+    else:  
         pass
     
     # testing field_names
-    if type(field_names) == str:  # tests if str, if so splits
+    if type(field_names) == str:  
         field_names = field_names.replace(',', ' ').split()
 
-    if type(field_names) != list or len(field_names) == 0:  # tests if field_name is NOT a list or empty
+    if type(field_names) != list or len(field_names) == 0:  
         raise SyntaxError
 
     for i in field_names:
-        if not i[0].isalpha():  # tests if first element is letter
+        if not i[0].isalpha():  
             raise SyntaxError
-        elif keyword.iskeyword(i):  # tests if conflicts with keywords
+        elif keyword.iskeyword(i):  
             raise SyntaxError
-        else:  # passes all tests
+        else: 
             pass
 
-    # testing for duplicates
-    a = []
+    # testing for duplicates in field_names
+    empty_list = []
     seen = {}  
 
     for name in field_names:
         if name not in seen:
-            a.append(name)
+            empty_list.append(name)
             seen[name] = True  
-    field_names = a
+    field_names = empty_list
 
     # testing defaults
-    if type(defaults) != dict:  # tests if default is a dict
+    if type(defaults) != dict:
         raise SyntaxError
     
     for i in defaults:
-        if i not in field_names:  # tests if element is in field_name
+        if i not in field_names:  
             raise SyntaxError
-        else:  # passes all tests
+        else:  
             pass
     
     # new line and tab
     new = ('\n')
     tab = ('    ')
 
-    # class code
+    # big_string NEEDED TO BE RETURNED!!!
     big_string = (f'class {type_name}:')
     big_string += new
     big_string += (f'{tab}_fields = {field_names}')
@@ -114,7 +114,8 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += "    def replace(self, **kwargs):\n"
     big_string += "        if self._mutable:\n"
     big_string += "            for name, value in kwargs.items():\n"
-    big_string += "                setattr(self, name, value)\n"
+    big_string += "                if name in self._fields:\n"
+    big_string += "                    setattr(self, name, value)\n"
     big_string += "            return None  # Return None to indicate that this is mutable\n"
     big_string += "        else:\n"
     big_string += "            new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n"
