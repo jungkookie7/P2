@@ -115,8 +115,8 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += "        if self._mutable:\n"
     big_string += "            for name, value in kwargs.items():\n"
     big_string += "                if name in self._fields:\n"
-    big_string += "                    setattr(self, name, value)\n"
-    big_string += "            return None\n"  # Explicitly return None for mutable objects
+    big_string += "                    object.__setattr__(self, name, value)\n"
+    big_string += "            return None\n"
     big_string += "        else:\n"
     big_string += "            new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n"
     big_string += "            return self.__class__(**new_values)\n\n"
@@ -128,9 +128,10 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
     # __setattr__ method
     big_string += "    def __setattr__(self, name, value):\n"
-    big_string += "        if not self._mutable and name in self._fields and hasattr(self, name):\n"
+    big_string += "        if self._mutable or name not in self._fields or not hasattr(self, name):\n"
+    big_string += "            object.__setattr__(self, name, value)\n"
+    big_string += "        else:\n"
     big_string += "            raise AttributeError(f'Cannot modify {name} in immutable {self.__class__.__name__}')\n"
-    big_string += "        super().__setattr__(name, value)\n"
 
     # Execute the generated class code
     namespace = {}
