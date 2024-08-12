@@ -59,15 +59,11 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += new
 
     # __init__
-    init_params = ''
-    for name in field_names:
-        init_params += f"{name}={defaults.get(name, 'None')}, "
-    init_params = init_params.rstrip(', ')  
-    big_string += f"{tab}def __init__(self, {init_params}):{new}"
-    
-    for name in field_names:
-        big_string += f"{tab*2}self.{name} = {name}{new}"
-    big_string += new
+    params = ''
+    for i in field_names:
+        params += (f'{i}={defaults.get(i, 'None')}, ')
+    params = params.rstrip(params[-2:])  
+    big_string += (f'{tab}def __init__(self, {params}):{new}')
     
     for i in field_names:
         big_string += (f'{tab}{tab}self.{i} = {i}')
@@ -119,17 +115,15 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += "        return cls(*iterable)\n\n"
 
     # replace method
-    # replace method
     big_string += "    def replace(self, **kwargs):\n"
     big_string += "        if self._mutable:\n"
     big_string += "            for name, value in kwargs.items():\n"
     big_string += "                if name in self._fields:\n"
     big_string += "                    setattr(self, name, value)\n"
-    big_string += "            return None  # Return None to indicate that this is mutable\n"
+    big_string += "            return None\n"  # Explicitly return None for mutable objects
     big_string += "        else:\n"
     big_string += "            new_values = {name: kwargs.get(name, getattr(self, name)) for name in self._fields}\n"
-    big_string += "            return self.__class__(**new_values)  # Use self.__class__ to create a new instance\n\n"
-
+    big_string += "            return self.__class__(**new_values)\n\n"
 
     # _replace method
     big_string += "    def _replace(self, **kwargs):\n"
