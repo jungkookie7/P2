@@ -60,14 +60,14 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     #print(big_string) *TEST MIDWAY
 
     # __init__
-    init_params = ''
-    for name in field_names:
-        init_params += f"{name}={defaults.get(name, 'None')}, "
-    init_params = init_params.rstrip(', ')  
-    big_string += f"{tab}def __init__(self, {init_params}):{new}"
+    parameters = ''
+    for i in field_names:
+        parameters += (f'{i}={defaults.get(i, 'None')}, ')
+    parameters = parameters.rstrip(', ')  
+    big_string += (f'{tab}def __init__(self, {parameters}):{new}')
     
-    for name in field_names:
-        big_string += f"{tab*2}self.{name} = {name}{new}"
+    for i in field_names:
+        big_string += (f'{tab*2}self.{i} = {i}{new}')
     big_string += new
     #print(big_string) *TEST MIDWAY
 
