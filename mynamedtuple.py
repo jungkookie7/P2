@@ -167,14 +167,22 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     #print(big_string) *TEST MIDWAY
 
     # __setattr__
-    big_string += (f'{tab}def __setattr__(self, name, value):{new}')
-    big_string += (f'{tab*2}if self._mutable:{new}')
-    big_string += (f'{tab*3}object.__setattr__(self, name, value){new}')
-    big_string += (f'{tab*2}elif name not in self._fields:{new}')
-    big_string += (f'{tab*3}object.__setattr__(self, name, value){new}')
-    big_string += (f'{tab*2}elif not hasattr(self, name):{new}')
-    big_string += (f'{tab*3}object.__setattr__(self, name, value){new}')
-    big_string += (f'{tab*2}else:{new}')
+    big_string += (f'{tab}def __setattr__(self, name, value):')
+    big_string += f'{new}'
+    big_string += (f'{tab*2}if self._mutable:')
+    big_string += f'{new}'
+    big_string += (f'{tab*3}object.__setattr__(self, name, value)')
+    big_string += f'{new}'
+    big_string += (f'{tab*2}elif name not in self._fields:')
+    big_string += f'{new}'
+    big_string += (f'{tab*3}object.__setattr__(self, name, value)')
+    big_string += f'{new}'
+    big_string += (f'{tab*2}elif not hasattr(self, name):')
+    big_string += f'{new}'
+    big_string += (f'{tab*3}object.__setattr__(self, name, value)')
+    big_string += f'{new}'
+    big_string += (f'{tab*2}else:')
+    big_string += f'{new}'
     big_string += (f'{tab*3}raise AttributeError')
     #print(big_string) *TEST MIDWAY
 
@@ -182,3 +190,8 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     namespace = {}
     exec(big_string, namespace)
     return namespace[type_name]
+
+#TESTERS
+coordinate = mynamedtuple(’coordinate’, ’x y’)
+p = coordinate(0, 0)
+print(p) # coordinate(x=0,y=0)
