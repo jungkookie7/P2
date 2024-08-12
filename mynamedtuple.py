@@ -59,7 +59,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     class_code += new
 
     #__init__
-    init_params = ', '.join(f"{name}={defaults.get(name, 'None')}" for name in field_names)
+    init_params = ','.join(f"{name}={defaults.get(name, 'None')}" for name in field_names)
     class_code += f"{tab}def __init__(self, {init_params}):{new}"
     for name in field_names:
         class_code += f"{tab*2}self.{name} = {name}{new}"
@@ -67,7 +67,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
 
     # __repr__ method
     class_code += f"{tab}def __repr__(self):{new}"
-    repr_fields = ','.join(f"{name}={{self.{name}!r}}" for name in field_names)
+    repr_fields = ', '.join(f"{name}={{self.{name}!r}}" for name in field_names)
     class_code += f"{tab*2}return f'{type_name}({repr_fields})'{new}{new}"
 
     # Accessor methods
