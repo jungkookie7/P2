@@ -92,7 +92,7 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += "            return NotImplemented\n"
     big_string += "        return all(getattr(self, name) == getattr(other, name) for name in self._fields)\n\n"
 
-    # asdict method
+    # asdict method 
     big_string += "    def asdict(self):\n"
     big_string += "        return {name: getattr(self, name) for name in self._fields}\n\n"
 
@@ -142,3 +142,21 @@ coordinate = mynamedtuple('coordinate', ['x', 'y'], mutable=False)  # testing tu
 p = coordinate(0, 0)
 print(p)  # coordinate(x=0, y=0)
 print(p.asdict())  # {'x': 0, 'y': 0}
+
+# Test for _make method
+point_data = (1, 2)
+p2 = coordinate._make(point_data)
+print(p2)  # coordinate(x=1, y=2)
+
+# Test for mutable replace method
+mutable_coordinate = mynamedtuple('mutable_coordinate', ['a', 'b'], mutable=True)
+mutable_point = mutable_coordinate(1, 2)
+mutable_point.replace(b=5)  # Call replace on a mutable instance
+print(mutable_point)  # mutable_coordinate(a=1, b=5)
+print(mutable_point.replace(a=3))  # Should print None
+
+# Testing _replace for immutable instance
+immutable_point = coordinate(5, 10)
+p3 = immutable_point._replace(x=15)
+print(p3)  # coordinate(x=15, y=10)
+
