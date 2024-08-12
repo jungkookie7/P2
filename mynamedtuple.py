@@ -96,10 +96,11 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     big_string += (f'{tab*2}if not isinstance(other, self.__class__):{new}')
     big_string += (f'{tab*3}return NotImplemented{new}')
     big_string += (f'{tab*2}return all(getattr(self, name) == getattr(other, name) for name in self._fields){new}')
+    big_string += (f'{new}')
     #print(big_string) *TEST MIDWAY
 
     # asdict 
-    big_string += (f'{tab}def asdict(self):{new}')
+    big_string += (f'{tab}def _asdict(self):{new}')
     big_string += (f"{tab*2}return {{name: getattr(self, name) for name in self._fields}}{new*2}")
     #print(big_string) *TEST MIDWAY
 
